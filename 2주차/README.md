@@ -541,4 +541,60 @@ CustomEditorConfigurer의 propertyEditorRegistrars 프로퍼티는 PropertyEdito
 결과적으로 MyPropertyEditorRegistrar 인스턴스에 의해 프로퍼티 에디터가 등록된다.
 
 ### p-이름공간과 c-이름공간으로 빈 정의를 간결하게 만들기
-p와 c 이름공간은 property와 constructor-arg 원소를 대신한다.
+XML 파일의 빈 정의를 덜 번잡하게 만들기 위해 사용한다.</br>
+p와 c 이름공간은 property와 constructor-arg 원소를 대신한다.</br>
+p-이름공간 예시
+> p:\<property-name\>="\<property-value\>"
+
+빈 프로퍼티가 다른 빈의 참조일 경우
+
+> p:\<property-name\>-ref="\<bean-reference\>"
+
+c-이름공간 예시
+> c:\<생성자-인수-이름\>="\<생성자-인수-값\>"
+
+생성자 인수가 다른 빈을 참조할 경우
+> c:\<생성자-인수-이름\>-ref="\<빈-참조\>
+
+### util 스키마
+일반적인 설정 작업을 쉽게 수행할 수 있어서 빈 설정이 편해진다.</br>
+스프링의 util 스키마는 여러 엘리먼트를 제공한다.</br>
+각 엘리먼트를 사용해 객체를 만들어 빈으로 노출한다.</br>
+기본 scope는 싱글턴 스코프이고 scope옵션으로 조정할 수 있다.
+![KakaoTalk_20220425_202432760](https://user-images.githubusercontent.com/25950908/165079834-3be1c784-6b21-408d-964d-3fb6a1cd15be.jpg)
+```Xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    <bean id="dataTypes" class="sample.spring.chapter03.beans.DataTypesExample">
+        .....
+        <constructor-arg name="propertiesType" ref="propertiesType" />
+		<constructor-arg name="anotherPropertiesType" ref="anotherPropertiesType" />
+        <constructor-arg name="listType" ref="listType" />
+        <constructor-arg name="mapType" ref="mapType" />
+        <constructor-arg name="setType" ref="setType" />
+        .....
+    </bean>
+
+    <util:constant id="booleanTrue" static-field="java.lang.Boolean.TRUE" />
+	<util:properties id="propertiesType"
+		location="classpath:META-INF/sample1.properties" />
+	<util:properties id="anotherPropertiesType"
+		location="classpath:META-INF/sample2.properties" />
+	<util:list id="listType" list-class="java.util.ArrayList">
+		<value>A simple String value in list</value>
+		<value>Another simple String value in list</value>
+	</util:list>
+	<util:map id="mapType" map-class="java.util.TreeMap">
+		<entry key="map key 1" value="map key 1’s value" />
+	</util:map>
+	<util:set id="setType" set-class="java.util.HashSet">
+		<value>Element 1</value>
+		<value>Element 2</value>
+	</util:set>
+    .....
+</beans>
+```
+beans에 스프링의 util 스키마를 포함시켜서 원하는 엘리먼트에 접근할 수 있도록 한다.</br>
+\<엘리먼트\>-class는 해당 엘리먼트가 만드는 구체적인 클래스를 지정한다. 지정하지 않으면 디폴트 클래스를 사용한다.</br>
+util 스키마의 list 엘리먼트는 List 인터페이스를 빈으로 노출하기 때문에 List 인스턴스를 다른 빈의 의존 관계로 지정할 수 있다. </br>
