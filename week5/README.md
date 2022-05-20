@@ -77,10 +77,16 @@ basePackages 속성으로 검색해야 하는 패키지(들)를 지정한다.
     </plugins>
 </build>
 ```
-gradle
+gradle (4.5 이전)
 ```gradle
 dependencies {
-    compileOnly("org.springframework:spring-context-indexer:5.0.5.RELEASE")
+    compileOnly("org.springframework:spring-context-indexer:{spring-version}")
+}
+```
+gradle (4.6 이후)
+```
+dependencies {
+    annotationProcessor "org.springframework:spring-context-indexer:{spring-version}"
 }
 ```
 maven으로 컴파일하면 target/classes/META-INF 폴더 안에 spring.components 파일이 생성되고 그 안에 스프링 컴포넌트의 인덱스가 들어있다.<br/>
@@ -178,7 +184,6 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 }
 ```
 @Autowired 애너테이션을 통해 설정 class의 fixedDepositDao 메서드가 생성한 FixedDepositDao 빈을 자동 연결한다.<br/>
-ComponentScan을 할 경우에는 이 방법을 활용해 빈 클래스에서 의존 관계를 연결한다.
 
 1, 2번 예시
 ```Java
